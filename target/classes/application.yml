@@ -1,0 +1,31 @@
+spring:
+
+  application:
+    name=mokeKafka2:
+
+  kafka:
+    bootstrap-servers: 192.168.1.97:9092
+    consumer:
+      group-id: kafka-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+    topics:
+      input:
+        - load_test_input
+        - topic_TEST
+      output: mock_response_output
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
