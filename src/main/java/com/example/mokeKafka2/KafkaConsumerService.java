@@ -8,8 +8,13 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class KafkaConsumerService {
+
+    private static final Logger logger = LoggerFactory.getLogger(KafkaConsumerService.class);
 
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
@@ -18,9 +23,6 @@ public class KafkaConsumerService {
 
     @KafkaListener(topics = "topic_TEST", groupId = "kafka-group")
     public void listen(String message) {
-
-        System.out.println("Received message: " + message);
-
         try {
             // Преобразуем входящее сообщение в JsonNode для удобной работы с полями
             JsonNode jsonNode = objectMapper.readTree(message);
@@ -36,12 +38,11 @@ public class KafkaConsumerService {
             // Отправляем обновленное сообщение в выходной топик
             kafkaTemplate.send("mock_response_output", updatedMessage);
 
-            // Выводим информацию о замене в консоль
-            System.out.println("Заменил сообщение: " + message + " на: " + updatedMessage);
+            // Логируем информацию о замене
+            logger.info("Updated message: {} to: {}", objectMapper.readTree(message), updatedMessage);
 
         } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Ошибка обработки сообщения: " + message);
+            logger.error("Error processing message: {}", message, e);
         }
     }
 }
