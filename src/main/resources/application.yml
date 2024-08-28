@@ -2,14 +2,16 @@ server:
   port: 8081
 
 spring:
+
   application:
     name=mokeKafka2:
 
   kafka:
-    bootstrap-servers: 192.168.1.97:9092
+    bootstrap-servers: localhost:9092
     consumer:
       group-id: kafka-group
       auto-offset-reset: earliest
+      enable-auto-commit: false
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
     producer:
@@ -17,10 +19,10 @@ spring:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
     topics:
-      input:
-        - load_test_input
-        - topic_TEST
+      input: load_test_input
       output: mock_response_output
+
+
 
 management:
   endpoints:

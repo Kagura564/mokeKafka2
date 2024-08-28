@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+
 @Service
 public class KafkaConsumerService {
 
@@ -21,18 +23,18 @@ public class KafkaConsumerService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @KafkaListener(topics = "topic_TEST", groupId = "kafka-group")
+    @KafkaListener(topics = "load_test_input", groupId = "kafka-group")
     public void listen(String message) {
         try {
             // Преобразуем входящее сообщение в JsonNode для удобной работы с полями
             JsonNode jsonNode = objectMapper.readTree(message);
 
             // Получаем текущий user_id и создаём новый user_id
-            String originalUserId = jsonNode.get("user_id").asText();
+            String originalUserId = jsonNode.get("id").asText();
             String newUserId = "123";
 
             // Создаём новый объект JSON с заменённым user_id
-            ((ObjectNode) jsonNode).put("user_id", newUserId);
+            ((ObjectNode) jsonNode).put("id", newUserId);
             String updatedMessage = objectMapper.writeValueAsString(jsonNode);
 
             // Отправляем обновленное сообщение в выходной топик
